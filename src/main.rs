@@ -51,12 +51,11 @@ enum Checks{
 #[derive(Debug)]
 enum Transformations{
     Empty,
-    Transform(String),
-    // MD5,
-    // MD4,
-    // SHA1,
-    // SHA256,
-    // SHA512,
+    MD5,
+    MD4,
+    SHA1,
+    SHA256,
+    SHA512,
 }
 
 #[derive(Debug)]
@@ -111,17 +110,21 @@ fn parse_wordlist(input: &str) -> IResult<&str,Wordlist>{
     }
     else{
     let (input,_) = tag(":")(input)?;
+    let input = match input.to_lowercase().as_str(){
+            "md5" => Transformations::MD5,
+            "md4" => Transformations::MD4,
+            "sha1" => Transformations::SHA1,
+            "sha256" => Transformations::SHA256,
+            "sha512" => Transformations::SHA512,
+            _ =>  panic!("Transformation not allowed"),
+        };
     Ok(("",Wordlist{
             value:value.to_string(),
             wordlist:wordlist.to_string(),
-            transformation:Transformations::Transform(input.to_string())
+            transformation:input,
         }))
     }
 }
-
-// fn parse_wordlist(input: &str)->IResult<&str,&str,()>{
-//
-// }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
 
